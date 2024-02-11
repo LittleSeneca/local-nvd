@@ -2,8 +2,9 @@
 
 # Step 1: Install Ansible
 echo "Installing Ansible..."
-sudo yum install -y epel-release
-sudo yum install -y ansible
+sudo yum install -y epel-release python3-pip ansible python3-devel postgresql-server wget gcc
+sudo pip3 install psycopg2
+
 
 # Verify Ansible installation
 ansible --version
@@ -13,7 +14,7 @@ ansible-galaxy collection install community.postgresql
 # Step 2: Run Ansible Playbook to Set Up PostgreSQL
 echo "Running Ansible Playbook to set up PostgreSQL..."
 # Replace 'setup_postgresql_local_centos.yml' with the path to your Ansible playbook
-ansible-playbook setup_postgresql_local_centos.yml
+ansible-playbook setup_postgresql.yml
 
 # Check if the playbook execution was successful
 if [ $? -ne 0 ]; then

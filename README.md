@@ -57,7 +57,7 @@ cd local-nvd
 Run the `provision.sh` script from your terminal:
 
 ```bash
-sudo ./provision.sh
+./provision.sh
 ```
 
 This script will automate the entire process, from provisioning the PostgreSQL server to collecting and inserting NVD data into the database.

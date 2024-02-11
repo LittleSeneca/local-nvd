@@ -3,23 +3,19 @@
   become: true
   connection: local
   vars:
+    ansible_python_interpreter: /usr/bin/python3
     db_name: nvd
     db_user: nvd-user
   tasks:
-    - name: Install PostgreSQL server
-      ansible.builtin.yum:
-        name: postgresql-server
-        state: present
-
-    - name: Install wget
-      ansible.builtin.yum:
-        name: wget
-        state: present
+    - name: Check if PostgreSQL data directory is initialized
+      ansible.builtin.stat:
+        path: /var/lib/pgsql/data/PG_VERSION
+      register: pgdata
 
     - name: Initialize PostgreSQL database
       ansible.builtin.command: postgresql-setup initdb
       changed_when: false
-      when: ansible_facts['os_family'] == "RedHat"
+      when: not pgdata.stat.exists
 
     - name: Ensure PostgreSQL service is running and enabled
       ansible.builtin.service:
