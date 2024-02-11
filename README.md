@@ -42,10 +42,22 @@ This project is designed to automate the collection of the full NIST National Vu
 
 ## Execution
 
+Clone this repository:
+
+```bash
+git clone https://github.com/LittleSeneca/local-nvd.git 
+```
+
+move into the repository folder:
+
+```bash
+cd local-nvd
+```
+
 Run the `provision.sh` script from your terminal:
 
 ```bash
-./provision.sh
+sudo ./provision.sh
 ```
 
 This script will automate the entire process, from provisioning the PostgreSQL server to collecting and inserting NVD data into the database.
