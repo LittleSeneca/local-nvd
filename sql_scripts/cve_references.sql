@@ -12,7 +12,8 @@ BEGIN
         name TEXT,
         refsource TEXT,
         tags JSONB,
-        FOREIGN KEY (cve_id) REFERENCES cve_details(cve_id)
+        FOREIGN KEY (cve_id) REFERENCES cve_details(cve_id),
+        UNIQUE (cve_id)
     );
     END IF;
 END

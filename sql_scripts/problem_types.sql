@@ -9,7 +9,8 @@ BEGIN
         problem_type_id SERIAL PRIMARY KEY,
         cve_id VARCHAR(50),
         description JSONB,
-        FOREIGN KEY (cve_id) REFERENCES cve_details(cve_id)
+        FOREIGN KEY (cve_id) REFERENCES cve_details(cve_id),
+        UNIQUE (cve_id)
     );
     END IF;
 END

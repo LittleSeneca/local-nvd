@@ -39,7 +39,6 @@
         regexp: '^local\s+all\s+all\s+peer'
         line: 'local all all trust'
         state: present
-      notify: Restart postgresql
 
     - name: Create PostgreSQL Database
       community.postgresql.postgresql_db:
@@ -57,7 +56,6 @@
         path: /var/lib/pgsql/data/pg_hba.conf
         regexp: '^host\s+all\s+all\s+127.0.0.1/32\s+ident'
         line: 'host all all all trust'
-      notify: Restart postgresql
 
     - name: Create database tables
       community.postgresql.postgresql_query:
@@ -72,8 +70,7 @@
         - ./sql_scripts/configurations.sql
         - ./sql_scripts/impact.sql
 
-  handlers:
-    - name: Restart postgresql
+    - name: Restart PostgreSQL service
       ansible.builtin.service:
         name: postgresql
         state: restarted
