@@ -40,6 +40,20 @@
         line: 'local all all trust'
         state: present
 
+    - name: Configure postgresql.conf to listen on all addresses
+      ansible.builtin.lineinfile:
+        path: /var/lib/pgsql/data/postgresql.conf
+        regexp: "^#listen_addresses = 'localhost'"
+        line: "listen_addresses = '*'"
+        state: present
+
+    - name: Allow remote connections in pg_hba.conf
+      ansible.builtin.lineinfile:
+        path: /var/lib/pgsql/data/pg_hba.conf
+        line: 'host all all 0.0.0.0/0 md5'
+        insertafter: EOF
+        state: present
+
     - name: Create PostgreSQL Database
       community.postgresql.postgresql_db:
         name: "{{ db_name }}"
@@ -50,12 +64,6 @@
         name: "{{ db_user }}"
         priv: ALL
         role_attr_flags: LOGIN
-
-    - name: Change pg_hba.conf to allow network access
-      ansible.builtin.lineinfile:
-        path: /var/lib/pgsql/data/pg_hba.conf
-        regexp: '^host\s+all\s+all\s+127.0.0.1/32\s+ident'
-        line: 'host all all all trust'
 
     - name: Create database tables
       community.postgresql.postgresql_query:
@@ -70,7 +78,7 @@
         - ./sql_scripts/configurations.sql
         - ./sql_scripts/impact.sql
 
-    - name: Restart PostgreSQL service
+    - name: Restart PostgreSQL service to apply changes
       ansible.builtin.service:
         name: postgresql
         state: restarted

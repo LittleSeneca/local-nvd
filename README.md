@@ -64,7 +64,7 @@ This script will automate the entire process, from provisioning the PostgreSQL s
 
 ## Security Note
 
-The default configuration allows the `nvd-user` to log in without a password for simplicity and demonstration purposes. In production environments, consider implementing stronger authentication methods and restricting network access to the database.
+The default configuration allows the `nvd-user` to log in without a password for simplicity of this project. The postgresql server is also configured to allow connections from anywhere. In production environments, consider implementing stronger authentication methods and restricting network access to the database.
 
 ## Conclusion
 
