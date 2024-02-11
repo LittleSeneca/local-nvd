@@ -7,6 +7,16 @@
     db_name: nvd
     db_user: nvd-user
   tasks:
+    - name: Install PostgreSQL server
+      ansible.builtin.yum:
+        name: postgresql-server
+        state: present
+
+    - name: Install wget
+      ansible.builtin.yum:
+        name: wget
+        state: present
+
     - name: Check if PostgreSQL data directory is initialized
       ansible.builtin.stat:
         path: /var/lib/pgsql/data/PG_VERSION
@@ -22,6 +32,14 @@
         name: postgresql
         state: started
         enabled: true
+
+    - name: Change pg_hba.conf to allow local access
+      ansible.builtin.lineinfile:
+        path: /var/lib/pgsql/data/pg_hba.conf
+        regexp: '^local\s+all\s+all\s+peer'
+        line: 'local all all trust'
+        state: present
+      notify: Restart postgresql
 
     - name: Create PostgreSQL Database
       community.postgresql.postgresql_db:
