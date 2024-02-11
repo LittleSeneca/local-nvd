@@ -8,6 +8,8 @@ sudo yum install -y ansible
 # Verify Ansible installation
 ansible --version
 
+ansible-galaxy collection install community.postgresql
+
 # Step 2: Run Ansible Playbook to Set Up PostgreSQL
 echo "Running Ansible Playbook to set up PostgreSQL..."
 # Replace 'setup_postgresql_local_centos.yml' with the path to your Ansible playbook
