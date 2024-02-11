@@ -2,8 +2,8 @@
 
 # Step 1: Install Ansible
 echo "Installing Ansible..."
-sudo yum install -y epel-release python3-pip ansible python3-devel postgresql-server wget gcc
-sudo pip3 install psycopg2
+yum install -y epel-release python3-pip ansible python3-devel postgresql-server wget gcc
+pip3 install psycopg2
 
 
 # Verify Ansible installation
@@ -44,4 +44,4 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "Provisioning and script execution completed successfully."
+echo "Provisioning and script execution completed."
