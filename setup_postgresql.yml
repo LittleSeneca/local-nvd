@@ -1,0 +1,65 @@
+- name: Setup PostgreSQL Server and Database Locally on CentOS
+  hosts: localhost
+  become: true
+  connection: local
+  vars:
+    db_name: nvd
+    db_user: nvd-user
+  tasks:
+    - name: Install PostgreSQL server
+      ansible.builtin.yum:
+        name: postgresql-server
+        state: present
+
+    - name: Install wget
+      ansible.builtin.yum:
+        name: wget
+        state: present
+
+    - name: Initialize PostgreSQL database
+      ansible.builtin.command: postgresql-setup initdb
+      changed_when: false
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Ensure PostgreSQL service is running and enabled
+      ansible.builtin.service:
+        name: postgresql
+        state: started
+        enabled: true
+
+    - name: Create PostgreSQL Database
+      community.postgresql.postgresql_db:
+        name: "{{ db_name }}"
+
+    - name: Create PostgreSQL User
+      community.postgresql.postgresql_user:
+        db: "{{ db_name }}"
+        name: "{{ db_user }}"
+        priv: ALL
+        role_attr_flags: LOGIN
+
+    - name: Change pg_hba.conf to allow network access
+      ansible.builtin.lineinfile:
+        path: /var/lib/pgsql/data/pg_hba.conf
+        regexp: '^host\s+all\s+all\s+127.0.0.1/32\s+ident'
+        line: 'host all all all trust'
+      notify: Restart postgresql
+
+    - name: Create database tables
+      community.postgresql.postgresql_query:
+        db: "{{ db_name }}"
+        login_user: "{{ db_user }}"
+        query: "{{ lookup('ansible.builtin.file', item) }}"
+      with_items:
+        - ./sql_scripts/cve_details.sql
+        - ./sql_scripts/problem_types.sql
+        - ./sql_scripts/cve_references.sql
+        - ./sql_scripts/descriptions.sql
+        - ./sql_scripts/configurations.sql
+        - ./sql_scripts/impact.sql
+
+  handlers:
+    - name: Restart postgresql
+      ansible.builtin.service:
+        name: postgresql
+        state: restarted
